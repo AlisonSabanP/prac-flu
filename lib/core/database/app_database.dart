@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:inventario/core/utils/app_directories.dart';
 import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
 
 part 'app_database.g.dart';
 
@@ -73,18 +73,9 @@ class AppDatabase extends _$AppDatabase {
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
-    final File file = File(p.join(await _resolveDataDirectory(), 'inventario.sqlite'));
+    final Directory directory = await resolveAppDirectory();
+    final File file = File(p.join(directory.path, 'inventario.sqlite'));
     return NativeDatabase.createInBackground(file);
   });
 }
 
-/// Directorio de datos de la aplicación. Usa el directorio de documentos y
-/// recurre a la carpeta temporal si la plataforma no lo expone.
-Future<String> _resolveDataDirectory() async {
-  try {
-    final Directory directory = await getApplicationDocumentsDirectory();
-    return directory.path;
-  } on MissingPlatformDirectoryException {
-    return Directory.systemTemp.path;
-  }
-}

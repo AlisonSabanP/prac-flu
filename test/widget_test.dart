@@ -1,30 +1,41 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:project/main.dart';
+import 'package:inventario/app.dart';
+import 'package:inventario/core/theme/app_theme.dart';
+import 'package:inventario/core/widgets/empty_state.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('la app construye el MaterialApp con el título INVENTARIO',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const ProviderScope(child: InventarioApp()));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    final MaterialApp app = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(app.title, 'INVENTARIO');
+    expect(app.theme?.useMaterial3, isTrue);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('EmptyState muestra título, mensaje y acción',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light(),
+        home: Scaffold(
+          body: EmptyState(
+            icon: Icons.inventory_2_outlined,
+            title: 'Sin productos',
+            message: 'Agrega tu primer producto.',
+            action: FilledButton(
+              onPressed: () {},
+              child: const Text('Agregar'),
+            ),
+          ),
+        ),
+      ),
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Sin productos'), findsOneWidget);
+    expect(find.text('Agrega tu primer producto.'), findsOneWidget);
+    expect(find.text('Agregar'), findsOneWidget);
   });
 }

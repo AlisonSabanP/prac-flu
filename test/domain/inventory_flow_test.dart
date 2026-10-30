@@ -9,7 +9,6 @@ import 'package:inventario/features/inventory/domain/entities/movement_request.d
 import 'package:inventario/features/inventory/domain/entities/movement_type.dart';
 import 'package:inventario/features/inventory/domain/usecases/register_movement_use_case.dart';
 import 'package:inventario/features/products/data/repositories/drift_product_repository.dart';
-import 'package:inventario/features/products/domain/entities/category.dart';
 import 'package:inventario/features/products/domain/entities/product.dart';
 import 'package:inventario/features/products/domain/entities/product_draft.dart';
 import 'package:inventario/features/products/domain/usecases/create_product_use_case.dart';
@@ -303,7 +302,7 @@ void main() {
     });
 
     test('el historial se filtra por rango de fechas', () async {
-      final Product product = await createProduct(initialStock: 10);
+      await createProduct(initialStock: 10);
       final DateTime future = DateTime.now().add(const Duration(days: 1));
 
       final List<Movement> upcoming = await movements.getMovements(
